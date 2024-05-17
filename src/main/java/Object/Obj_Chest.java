@@ -5,8 +5,11 @@ import java.io.IOException;
 
 public class Obj_Chest extends SuperObject{
 
+    private boolean isOpened;
+
     public Obj_Chest(){
         super("Chest");
+        this.isOpened = false;
         try{
             setImage(ImageIO.read(getClass().getResourceAsStream("/Objects/chest.png")));
         }
@@ -14,6 +17,16 @@ public class Obj_Chest extends SuperObject{
             e.printStackTrace();
         }
         setCollision(true);
+    }
+
+    public void open(){
+        if(!isOpened) isOpened = true;
+        try{
+            setImage(ImageIO.read(getClass().getResourceAsStream("/Objects/chest_opened.png")));
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
 }

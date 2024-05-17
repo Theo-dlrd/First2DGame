@@ -9,15 +9,16 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends Entity{
-    KeyHandler keyH;
-
+    private final KeyHandler keyH;
     private final int screenX;
     private final int screenY;
+    private int hasKey;
 
 
     public Player(GamePanel gp, KeyHandler keyH){
         super(gp);
         this.keyH = keyH;
+        this.hasKey = 0;
 
         screenX = gp.getScreenWidth()/2-gp.getTileSize()/2;
         screenY = gp.getScreenHeight()/2-gp.getTileSize()/2;
@@ -67,9 +68,7 @@ public class Player extends Entity{
             gp.getCollisionChecker().checkTile(this);
 
             int objIndex = gp.getCollisionChecker().checkObject(this,true);
-            if(objIndex>=0){
-
-            }
+            pickUpObject(objIndex);
 
             if(!getCollision()){
                 if(super.getDirection()==Direction.UP){
@@ -93,6 +92,27 @@ public class Player extends Entity{
                         super.decrementSpriteNum();
                     }
                     super.razSprinteCounter();
+                }
+            }
+        }
+    }
+
+    public void pickUpObject(int i){
+        if(i>=0){
+            String objName = gp.getObjectAt(i).getName();
+            switch (objName){
+                case "Key" -> {
+                    hasKey++;
+                    gp.setObjectAt(i,null);
+                }
+                case "Door" -> {
+                    if(hasKey>0){
+                        hasKey--;
+                        gp.setObjectAt(i,null);
+                    }
+                }
+                case "Chest" -> {
+                    //((Obj_Chest)gp.getObjectAt(i)).open();
                 }
             }
         }
