@@ -2,8 +2,7 @@ package main;
 
 import entity.Player;
 import tile.TileManager;
-import Object.SuperObject;
-
+import object.SuperObject;
 import javax.swing.JPanel;
 import java.awt.*;
 
@@ -15,10 +14,10 @@ public class GamePanel extends JPanel implements Runnable{
     //Scale
     private final int scale  = 3;
     private int tileSize = originalTileSize * scale; // 48x48 tile
-    private int maxScreenCol = 16;
-    private int maxScreenRow = 12;
-    private int screenWidth = tileSize * maxScreenCol; // 768 pixels
-    private int screenHeight = tileSize * maxScreenRow;   // 576 pixels
+    private final int maxScreenCol = 16;
+    private final int maxScreenRow = 12;
+    private final int screenWidth = tileSize * maxScreenCol; // 768 pixels
+    private final int screenHeight = tileSize * maxScreenRow;   // 576 pixels
 
     // WORLD SETTINGS
     private final int maxWorldCol=50;
@@ -34,7 +33,9 @@ public class GamePanel extends JPanel implements Runnable{
     private final CollisionChecker collisionChecker;
     private final SuperObject[] objects;
     private final AssetSetter assetSetter;
-
+    private final Sound music;
+    private final Sound soundEffect;
+    private final UI ui;
 
     //FPS
     private final double FPS = 60.0;
@@ -46,6 +47,9 @@ public class GamePanel extends JPanel implements Runnable{
         collisionChecker = new CollisionChecker(this);
         objects = new SuperObject[10];
         assetSetter = new AssetSetter(this);
+        music = new Sound();
+        soundEffect = new Sound();
+        ui = new UI(this);
 
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.black);
@@ -56,7 +60,9 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void setupGame(){
         assetSetter.setObject();
+        playMusic(0);
     }
+
     public void startGameThread(){
         gameThread = new Thread(this);
         gameThread.start();
@@ -98,6 +104,7 @@ public class GamePanel extends JPanel implements Runnable{
             if(getObjectAt(i)!=null) getObjectAt(i).draw(g2,this);
         }
         player.draw(g2);
+        ui.draw(g2);
 
         g2.dispose();
     }
@@ -192,6 +199,29 @@ public class GamePanel extends JPanel implements Runnable{
 
     public int getNbObjects(){
         return objects.length;
+    }
+
+    public void playMusic(int i){
+        music.setFile(i);
+        music.play();
+        music.loop();
+    }
+
+    public void stopMusic(){
+        music.stop();
+    }
+
+    public void playSE(int i){
+        soundEffect.setFile(i);
+        soundEffect.play();
+    }
+
+    public UI getUi(){
+        return ui;
+    }
+
+    public void setGameThread(Thread th){
+        this.gameThread = th;
     }
 
 }

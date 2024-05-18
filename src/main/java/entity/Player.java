@@ -2,6 +2,8 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
+import object.Obj_Chest;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,12 +15,14 @@ public class Player extends Entity{
     private final int screenX;
     private final int screenY;
     private int hasKey;
+    private int standCounter;
 
 
     public Player(GamePanel gp, KeyHandler keyH){
         super(gp);
         this.keyH = keyH;
         this.hasKey = 0;
+        this.standCounter = 0;
 
         screenX = gp.getScreenWidth()/2-gp.getTileSize()/2;
         screenY = gp.getScreenHeight()/2-gp.getTileSize()/2;
@@ -35,18 +39,28 @@ public class Player extends Entity{
     }
 
     public void getPlayerImages(){
+        setUp1Image(setup("boy_up_1"));
+        setUp2Image(setup("boy_up_2"));
+        setDown1Image(setup("boy_down_1"));
+        setDown2Image(setup("boy_down_2"));
+        setLeft1Image(setup("boy_left_1"));
+        setLeft2Image(setup("boy_left_2"));
+        setRight1Image(setup("boy_right_1"));
+        setRight2Image(setup("boy_right_2"));
+    }
+
+    private BufferedImage setup(String imgName){
+        UtilityTool UT = new UtilityTool();
+        BufferedImage scaledImage = null;
         try{
-            super.setUp1Image(ImageIO.read(getClass().getResourceAsStream("/Player/Walking/boy_up_1.png")));
-            super.setUp2Image(ImageIO.read(getClass().getResourceAsStream("/Player/Walking/boy_up_2.png")));
-            super.setDown1Image(ImageIO.read(getClass().getResourceAsStream("/Player/Walking/boy_down_1.png")));
-            super.setDown2Image(ImageIO.read(getClass().getResourceAsStream("/Player/Walking/boy_down_2.png")));
-            super.setLeft1Image(ImageIO.read(getClass().getResourceAsStream("/Player/Walking/boy_left_1.png")));
-            super.setLeft2Image(ImageIO.read(getClass().getResourceAsStream("/Player/Walking/boy_left_2.png")));
-            super.setRight1Image(ImageIO.read(getClass().getResourceAsStream("/Player/Walking/boy_right_1.png")));
-            super.setRight2Image(ImageIO.read(getClass().getResourceAsStream("/Player/Walking/boy_right_2.png")));
-        }catch(IOException e){
+            scaledImage = ImageIO.read(getClass().getResourceAsStream("/Player/Walking/"+imgName+".png"));
+            scaledImage = UT.scaledImage(scaledImage,gp.getTileSize(), gp.getTileSize());
+        }
+        catch(IOException e){
             e.printStackTrace();
         }
+
+        return scaledImage;
     }
 
     public void update(){
@@ -95,6 +109,13 @@ public class Player extends Entity{
                 }
             }
         }
+        else{
+            standCounter++;
+            if(standCounter == 20){
+                setSpriteNum(1);
+                standCounter=0;
+            }
+        }
     }
 
     public void pickUpObject(int i){
@@ -102,17 +123,35 @@ public class Player extends Entity{
             String objName = gp.getObjectAt(i).getName();
             switch (objName){
                 case "Key" -> {
+                    gp.playSE(1);
                     hasKey++;
                     gp.setObjectAt(i,null);
+                    gp.getUi().showMessage("You got a key !");
                 }
                 case "Door" -> {
                     if(hasKey>0){
+                        gp.playSE(3);
                         hasKey--;
                         gp.setObjectAt(i,null);
+                        gp.getUi().showMessage("You opened the door !");
+                    }
+                    else{
+                        gp.getUi().showMessage("You need a key to open this door !");
                     }
                 }
                 case "Chest" -> {
-                    //((Obj_Chest)gp.getObjectAt(i)).open();
+                    if(!((Obj_Chest)gp.getObjectAt(i)).isOpen()) {
+                        gp.getUi().finishGame();
+                        gp.stopMusic();
+                        gp.playSE(4);
+                        ((Obj_Chest) gp.getObjectAt(i)).open();
+                    }
+                }
+                case "Boots" -> {
+                    gp.playSE(2);
+                    incrementSpeed(1);
+                    gp.setObjectAt(i, null);
+                    gp.getUi().showMessage("Speed Up !");
                 }
             }
         }
@@ -139,7 +178,10 @@ public class Player extends Entity{
                 else if(super.getSpriteNum()==2) img = super.getRight2();
             }
         }
-        g2.drawImage(img, this.screenX, this.screenY, gp.getTileSize(), gp.getTileSize(), null);
+        g2.drawImage(img, this.screenX, this.screenY, null);
+
+        //g2.setColor(Color.red);
+        //g2.drawRect(screenX+getSolidArea().x, screenY+getSolidArea().y, getSolidArea().width, getSolidArea().height);
     }
 
 
@@ -149,6 +191,10 @@ public class Player extends Entity{
 
     public int getScreenY(){
         return screenY;
+    }
+
+    public int getNbKey(){
+        return hasKey;
     }
 
 }

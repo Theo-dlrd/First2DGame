@@ -44,6 +44,10 @@ public class Entity {
         return spriteNum;
     }
 
+    public void setSpriteNum(int n){
+        spriteNum = n;
+    }
+
     public void incrementSpriteNum(){
         spriteNum++;
     }

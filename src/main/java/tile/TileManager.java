@@ -1,9 +1,11 @@
 package tile;
 
 import main.GamePanel;
+import main.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,27 +26,21 @@ public class TileManager {
     }
 
     public void getTileImage(){
+        setup(0, "grass01", false);
+        setup(1, "wall", true);
+        setup(2, "water01", true);
+        setup(3, "earth", false);
+        setup(4, "tree", true);
+        setup(5, "road00", false);
+    }
+
+    private void setup(int index, String imgName, boolean collision){
+        UtilityTool UT = new UtilityTool();
         try{
-            tiles[0] = new Tile();
-            tiles[0].setImage(ImageIO.read(getClass().getResourceAsStream("/Tiles/grass01.png")));
-
-            tiles[1] = new Tile();
-            tiles[1].setImage(ImageIO.read(getClass().getResourceAsStream("/Tiles/wall.png")));
-            tiles[1].setCollision(true);
-
-            tiles[2] = new Tile();
-            tiles[2].setImage(ImageIO.read(getClass().getResourceAsStream("/Tiles/water01.png")));
-            tiles[2].setCollision(true);
-
-            tiles[3] = new Tile();
-            tiles[3].setImage(ImageIO.read(getClass().getResourceAsStream("/Tiles/earth.png")));
-
-            tiles[4] = new Tile();
-            tiles[4].setImage(ImageIO.read(getClass().getResourceAsStream("/Tiles/tree.png")));
-            tiles[4].setCollision(true);
-
-            tiles[5] = new Tile();
-            tiles[5].setImage(ImageIO.read(getClass().getResourceAsStream("/Tiles/road00.png")));
+            tiles[index] = new Tile();
+            tiles[index].setImage(ImageIO.read(getClass().getResourceAsStream("/Tiles/"+imgName+".png")));
+            tiles[index].setImage(UT.scaledImage(tiles[index].getImage(),gp.getTileSize(), gp.getTileSize()));
+            tiles[index].setCollision(collision);
         }
         catch(IOException e){
             e.printStackTrace();
@@ -96,7 +92,7 @@ public class TileManager {
                     && worldX - gp.getTileSize() < gp.getPlayer().getX() + gp.getPlayer().getScreenX()
                     && worldY + gp.getTileSize() > gp.getPlayer().getY() - gp.getPlayer().getScreenY()
                     && worldY - gp.getTileSize() < gp.getPlayer().getY() + gp.getPlayer().getScreenY()) {
-                g2.drawImage(tiles[tileNum].getImage(), screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+                g2.drawImage(tiles[tileNum].getImage(), screenX, screenY, null);
             }
 
             worldCol++;
