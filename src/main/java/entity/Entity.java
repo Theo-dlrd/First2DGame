@@ -16,6 +16,9 @@ public class Entity {
     private double solidAreaDefaultX, solidAreaDefaultY;
     private boolean collisionOn;
     protected GamePanel gp;
+    protected int actionLockCounter;
+    protected String[] dialogues;
+    protected int dialogIndex;
 
 
     protected Entity(GamePanel gp){
@@ -26,6 +29,9 @@ public class Entity {
         this.solidArea = new Rectangle(gp.getTileSize()/4, gp.getTileSize()/2, gp.getTileSize()/2, gp.getTileSize()/2);
         solidAreaDefaultX = solidArea.getX();
         solidAreaDefaultY = solidArea.getY();
+        this.actionLockCounter = 0;
+        dialogues = new String[20];
+        dialogIndex = 0;
     }
 
     public void razSprinteCounter(){
@@ -188,6 +194,111 @@ public class Entity {
 
     public Rectangle getSolidArea(){
         return solidArea;
+    }
+
+    public void draw(Graphics2D g2){
+        int screenX = (int) (worldX - gp.getPlayer().getX()+gp.getPlayer().getScreenX());
+        int screenY = (int) (worldY - gp.getPlayer().getY()+gp.getPlayer().getScreenY());
+
+        BufferedImage img = null;
+
+        if(worldX + gp.getTileSize() > gp.getPlayer().getX() - gp.getPlayer().getScreenX()
+                && worldX - gp.getTileSize() < gp.getPlayer().getX() + gp.getPlayer().getScreenX()
+                && worldY + gp.getTileSize() > gp.getPlayer().getY() - gp.getPlayer().getScreenY()
+                && worldY - gp.getTileSize() < gp.getPlayer().getY() + gp.getPlayer().getScreenY()) {
+
+            switch (direction){
+                case UP -> {
+                    if(getSpriteNum()==1) img = getUp1();
+                    else if(getSpriteNum()==2) img = getUp2();
+                }
+                case DOWN -> {
+                    if(getSpriteNum()==1) img = getDown1();
+                    else if(getSpriteNum()==2) img = getDown2();
+                }
+                case LEFT -> {
+                    if(getSpriteNum()==1) img = getLeft1();
+                    else if(getSpriteNum()==2) img = getLeft2();
+                }
+                case RIGHT -> {
+                    if(getSpriteNum()==1) img = getRight1();
+                    else if(getSpriteNum()==2) img = getRight2();
+                }
+            }
+            g2.drawImage(img, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+        }
+    }
+
+    public void setAction(){
+        //Vide puisque redéfinie dans les classes fils
+    }
+
+    public void speak(){
+        if(dialogues[dialogIndex]!=null) {
+            gp.getUi().setCurrentDialogue(dialogues[dialogIndex]);
+            dialogIndex++;
+
+            switch (gp.getPlayer().getDirection()) {
+                case UP -> {
+                    this.setDirection(Direction.DOWN);
+                }
+                case DOWN -> {
+                    this.setDirection(Direction.UP);
+                }
+                case LEFT -> {
+                    this.setDirection(Direction.RIGHT);
+                }
+                case RIGHT -> {
+                    this.setDirection(Direction.LEFT);
+                }
+            }
+        }
+    }
+
+    public void update(){
+        setAction();
+
+        collisionOn = false;
+        gp.getCollisionChecker().checkTile(this);
+        gp.getCollisionChecker().checkObject(this, false);
+        gp.getCollisionChecker().checkPlayer(this);
+
+        if(!getCollision()){
+            if(getDirection()==Direction.UP){
+                decrementY(getSpeed());
+            }
+            if(getDirection()==Direction.DOWN){
+                incrementY(getSpeed());
+            }
+            if(getDirection()==Direction.LEFT){
+                decrementX(getSpeed());
+            }
+            if(getDirection()==Direction.RIGHT){
+                incrementX(getSpeed());
+            }
+
+            incrementSpriteCounter();
+            if (getSpriteCounter() > 12) {
+                if (getSpriteNum() == 1) {
+                    incrementSpriteNum();
+                } else {
+                    decrementSpriteNum();
+                }
+                razSprinteCounter();
+            }
+        }
+    }
+
+    public int getDialogIndex(){
+        return dialogIndex;
+    }
+
+    public void setDialogIndex(int i){
+        this.dialogIndex = i;
+    }
+
+    public String getDialogueAt(int i){
+        return dialogues[i];
     }
 
 }

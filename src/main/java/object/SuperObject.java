@@ -11,8 +11,8 @@ public class SuperObject {
     private BufferedImage image;
     private final String name;
     private boolean collision;
-    private Rectangle solidArea;
-    private int solidAreaDefaultX, solidAreaDefaultY;
+    private final Rectangle solidArea;
+    private final int solidAreaDefaultX, solidAreaDefaultY;
     protected UtilityTool UT;
     protected GamePanel gp;
 

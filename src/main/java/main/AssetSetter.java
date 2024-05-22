@@ -1,5 +1,6 @@
 package main;
 
+import entity.NPC_Oldman;
 import object.*;
 
 public class AssetSetter {
@@ -10,6 +11,7 @@ public class AssetSetter {
         this.gp = gp;
     }
 
+    /*
     public void setObject(){
         gp.setObjectAt(0,new Obj_Key(gp));
         gp.getObjectAt(0).setX(23*gp.getTileSize());
@@ -42,5 +44,16 @@ public class AssetSetter {
         gp.setObjectAt(7,new Obj_Boots(gp));
         gp.getObjectAt(7).setX(37*gp.getTileSize());
         gp.getObjectAt(7).setY(42*gp.getTileSize());
+    }
+    */
+
+    public void setObject(){
+
+    }
+
+    public void setNPC(){
+        gp.setNPCAt(0, new NPC_Oldman(gp));
+        gp.getNPCAt(0).setX(gp.getTileSize()*21);
+        gp.getNPCAt(0).setY(gp.getTileSize()*21);
     }
 }

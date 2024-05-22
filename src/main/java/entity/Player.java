@@ -2,8 +2,8 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.State;
 import main.UtilityTool;
-import object.Obj_Chest;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,15 +14,17 @@ public class Player extends Entity{
     private final KeyHandler keyH;
     private final int screenX;
     private final int screenY;
-    private int hasKey;
+    //private int hasKey;
     private int standCounter;
+    private Entity talkingTo;
 
 
     public Player(GamePanel gp, KeyHandler keyH){
         super(gp);
         this.keyH = keyH;
-        this.hasKey = 0;
+        //this.hasKey = 0;
         this.standCounter = 0;
+        this.talkingTo = null;
 
         screenX = gp.getScreenWidth()/2-gp.getTileSize()/2;
         screenY = gp.getScreenHeight()/2-gp.getTileSize()/2;
@@ -81,8 +83,11 @@ public class Player extends Entity{
             setCollisionOn(false);
             gp.getCollisionChecker().checkTile(this);
 
-            int objIndex = gp.getCollisionChecker().checkObject(this,true);
-            pickUpObject(objIndex);
+            int npcIndex = gp.getCollisionChecker().checkEntity(this, gp.getNPCArray());
+            interactNPC(npcIndex);
+
+            //int objIndex = gp.getCollisionChecker().checkObject(this,true);
+            //pickUpObject(objIndex);
 
             if(!getCollision()){
                 if(super.getDirection()==Direction.UP){
@@ -118,6 +123,7 @@ public class Player extends Entity{
         }
     }
 
+    /*
     public void pickUpObject(int i){
         if(i>=0){
             String objName = gp.getObjectAt(i).getName();
@@ -154,6 +160,13 @@ public class Player extends Entity{
                     gp.getUi().showMessage("Speed Up !");
                 }
             }
+        }
+    }
+    */
+
+    public void pickUpObject(int i){
+        if(i>=0){
+
         }
     }
 
@@ -193,8 +206,26 @@ public class Player extends Entity{
         return screenY;
     }
 
+    /*
     public int getNbKey(){
         return hasKey;
+    }
+    */
+
+    public void interactNPC(int npcIndex){
+        if(npcIndex>=0 && gp.getKeyHandler().isEPressed()){
+            this.talkingTo = gp.getNPCAt(npcIndex);
+            gp.setGameState(State.DIALOGUE);
+        }
+        gp.getKeyHandler().setEPressed(false);
+    }
+
+    public Entity getTalkingTo(){
+        return talkingTo;
+    }
+
+    public void setTalkingTo(Entity entity){
+        this.talkingTo = entity;
     }
 
 }

@@ -1,5 +1,6 @@
 package main;
 
+import entity.Entity;
 import entity.Player;
 import tile.TileManager;
 import object.SuperObject;
@@ -32,10 +33,14 @@ public class GamePanel extends JPanel implements Runnable{
     private final TileManager tileManager;
     private final CollisionChecker collisionChecker;
     private final SuperObject[] objects;
+    private final Entity[] npcs;
     private final AssetSetter assetSetter;
     private final Sound music;
     private final Sound soundEffect;
     private final UI ui;
+
+    //GAME STATE
+    private State gameState;
 
     //FPS
     private final double FPS = 60.0;
@@ -50,6 +55,7 @@ public class GamePanel extends JPanel implements Runnable{
         music = new Sound();
         soundEffect = new Sound();
         ui = new UI(this);
+        npcs = new Entity[10];
 
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.black);
@@ -60,7 +66,9 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void setupGame(){
         assetSetter.setObject();
+        assetSetter.setNPC();
         playMusic(0);
+        gameState = State.PLAYING;
     }
 
     public void startGameThread(){
@@ -91,7 +99,12 @@ public class GamePanel extends JPanel implements Runnable{
 
 
     public void update(){
-        player.update();
+        if(gameState==State.PLAYING){
+            player.update();
+            for (int i = 0; i < npcs.length; i++) {
+                if(npcs[i]!=null) npcs[i].update();
+            }
+        }
     }
 
     public void paintComponent(Graphics g){
@@ -102,6 +115,9 @@ public class GamePanel extends JPanel implements Runnable{
         tileManager.draw(g2);
         for (int i = 0; i < objects.length; i++) {
             if(getObjectAt(i)!=null) getObjectAt(i).draw(g2,this);
+        }
+        for (int i = 0; i < npcs.length; i++) {
+            if(getNPCAt(i)!=null) getNPCAt(i).draw(g2);
         }
         player.draw(g2);
         ui.draw(g2);
@@ -224,4 +240,27 @@ public class GamePanel extends JPanel implements Runnable{
         this.gameThread = th;
     }
 
+    public State getGameState(){
+        return gameState;
+    }
+
+    public void setGameState(State st){
+        this.gameState = st;
+    }
+
+    public void setNPCAt(int i, Entity e){
+        this.npcs[i] = e;
+    }
+
+    public Entity getNPCAt(int i){
+        return this.npcs[i];
+    }
+
+    public Entity[] getNPCArray(){
+        return this.npcs;
+    }
+
+    public KeyHandler getKeyHandler(){
+        return this.keyH;
+    }
 }
