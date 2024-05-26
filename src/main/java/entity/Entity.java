@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 public class Entity {
     private double worldX, worldY;
     private double speed;
-    private BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+    protected BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     private Direction direction;
     private int spriteCounter;
     private int spriteNum;
@@ -19,6 +19,7 @@ public class Entity {
     protected int actionLockCounter;
     protected String[] dialogues;
     protected int dialogIndex;
+    protected int max_life, life;
 
 
     protected Entity(GamePanel gp){
@@ -299,6 +300,14 @@ public class Entity {
 
     public String getDialogueAt(int i){
         return dialogues[i];
+    }
+
+    public int getMax_life(){
+        return max_life;
+    }
+
+    public int getLife(){
+        return life;
     }
 
 }

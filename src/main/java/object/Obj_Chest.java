@@ -13,7 +13,7 @@ public class Obj_Chest extends SuperObject{
         super("Chest", gp);
         this.isOpened = false;
         try{
-            setImage(ImageIO.read(getClass().getResourceAsStream("/Objects/chest.png")));
+            setImage1(ImageIO.read(getClass().getResourceAsStream("/Objects/chest.png")));
         }
         catch(IOException e){
             e.printStackTrace();
@@ -24,7 +24,7 @@ public class Obj_Chest extends SuperObject{
     public void open(){
         if(!isOpened) isOpened = true;
         try{
-            setImage(ImageIO.read(getClass().getResourceAsStream("/Objects/chest_opened.png")));
+            setImage1(ImageIO.read(getClass().getResourceAsStream("/Objects/chest_opened.png")));
         }
         catch(IOException e){
             e.printStackTrace();

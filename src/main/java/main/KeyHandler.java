@@ -49,7 +49,30 @@ public class KeyHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-        if(gp.getGameState()==State.PLAYING){
+        if(gp.getGameState()==State.TITLE){
+            if(gp.getUi().getMenuState()==MenuState.MAIN) {
+                if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+                    gp.getUi().incrementCommandNum();
+                } else if (code == KeyEvent.VK_Z || code == KeyEvent.VK_UP) {
+                    gp.getUi().decrementCommandNum();
+                } else if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_D) {
+                    switch (gp.getUi().getCommandNum()) {
+                        case 0:
+                            //gp.getUi().setMenuState(MenuState.PLAYER_SELECTION);
+                            gp.setGameState(State.PLAYING);
+                            gp.playMusic(0);
+                            break;
+                        case 1:
+                            //Add later
+                            break;
+                        case 2:
+                            System.exit(0);
+                            break;
+                    }
+                }
+            }
+        }
+        else if(gp.getGameState()==State.PLAYING){
             if(code==KeyEvent.VK_Z){
                 upPressed = true;
             }

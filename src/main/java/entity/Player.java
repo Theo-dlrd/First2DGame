@@ -25,6 +25,8 @@ public class Player extends Entity{
         //this.hasKey = 0;
         this.standCounter = 0;
         this.talkingTo = null;
+        super.max_life = 10;
+        super.life = 9;
 
         screenX = gp.getScreenWidth()/2-gp.getTileSize()/2;
         screenY = gp.getScreenHeight()/2-gp.getTileSize()/2;
@@ -226,6 +228,10 @@ public class Player extends Entity{
 
     public void setTalkingTo(Entity entity){
         this.talkingTo = entity;
+    }
+
+    public BufferedImage getImageDown1(){
+        return down1;
     }
 
 }

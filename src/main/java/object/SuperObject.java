@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 
 public class SuperObject {
     private int x, y;
-    private BufferedImage image;
+    private BufferedImage image1, image2, image3;
     private final String name;
     private boolean collision;
     private final Rectangle solidArea;
@@ -54,12 +54,28 @@ public class SuperObject {
         this.y = y;
     }
 
-    public void setImage(BufferedImage img){
-        this.image = img;
+    public void setImage1(BufferedImage img){
+        this.image1 = img;
     }
 
-    public BufferedImage getImage(){
-        return image;
+    public void setImage2(BufferedImage img){
+        this.image2 = img;
+    }
+
+    public void setImage3(BufferedImage img){
+        this.image3 = img;
+    }
+
+    public BufferedImage getImage1(){
+        return image1;
+    }
+
+    public BufferedImage getImage2(){
+        return image2;
+    }
+
+    public BufferedImage getImage3(){
+        return image3;
     }
 
     public String getName(){
@@ -82,7 +98,7 @@ public class SuperObject {
                 && x - gp.getTileSize() < gp.getPlayer().getX() + gp.getPlayer().getScreenX()
                 && y + gp.getTileSize() > gp.getPlayer().getY() - gp.getPlayer().getScreenY()
                 && y - gp.getTileSize() < gp.getPlayer().getY() + gp.getPlayer().getScreenY()) {
-            g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            g2.drawImage(image1, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
         }
     }
 

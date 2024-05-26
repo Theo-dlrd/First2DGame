@@ -62,13 +62,14 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+
+        setupGame();
     }
 
     public void setupGame(){
         assetSetter.setObject();
         assetSetter.setNPC();
-        playMusic(0);
-        gameState = State.PLAYING;
+        gameState = State.TITLE;
     }
 
     public void startGameThread(){
@@ -112,17 +113,22 @@ public class GamePanel extends JPanel implements Runnable{
 
         Graphics2D g2 = (Graphics2D) g;
 
-        tileManager.draw(g2);
-        for (int i = 0; i < objects.length; i++) {
-            if(getObjectAt(i)!=null) getObjectAt(i).draw(g2,this);
+        if(gameState == State.TITLE){
+            ui.draw(g2);
         }
-        for (int i = 0; i < npcs.length; i++) {
-            if(getNPCAt(i)!=null) getNPCAt(i).draw(g2);
-        }
-        player.draw(g2);
-        ui.draw(g2);
+        else {
+            tileManager.draw(g2);
+            for (int i = 0; i < objects.length; i++) {
+                if (getObjectAt(i) != null) getObjectAt(i).draw(g2, this);
+            }
+            for (int i = 0; i < npcs.length; i++) {
+                if (getNPCAt(i) != null) getNPCAt(i).draw(g2);
+            }
+            player.draw(g2);
+            ui.draw(g2);
 
-        g2.dispose();
+            g2.dispose();
+        }
     }
 
     public int getTileSize(){
